@@ -1,0 +1,302 @@
+{
+  "info": {
+    "_postman_id": "9b12851b-7a32-4e8c-a1d2-interviewai2026",
+    "name": "InterviewAI API Collection",
+    "description": "Production API endpoints for InterviewAI MERN platform featuring Gemini AI integration, resume parsing, and analytics.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:5000/api",
+      "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Register Candidate",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Sarah Connor\",\n  \"email\": \"sarah@example.com\",\n  \"password\": \"password123\",\n  \"targetRole\": \"Full Stack Developer\",\n  \"skills\": [\"React\", \"Node.js\", \"MongoDB\", \"JavaScript\"]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "register"]
+            }
+          }
+        },
+        {
+          "name": "Login Candidate",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.token) {",
+                  "    pm.collectionVariables.set('token', jsonData.token);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"demo@interviewai.dev\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "login"]
+            }
+          }
+        },
+        {
+          "name": "Get Profile",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/profile",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "profile"]
+            }
+          }
+        },
+        {
+          "name": "Update Profile",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Alex Johnson\",\n  \"targetRole\": \"Senior Full Stack Engineer\",\n  \"skills\": [\"React\", \"Node.js\", \"TypeScript\", \"MongoDB\", \"AWS\"]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/profile",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "profile"]
+            }
+          }
+        },
+        {
+          "name": "Toggle Bookmark Question",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"question\": \"Explain the difference between process and thread.\",\n  \"topic\": \"Operating Systems\",\n  \"difficulty\": \"Easy\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/bookmark",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "bookmark"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Interviews",
+      "item": [
+        {
+          "name": "Generate Interview Questions",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"topic\": \"React\",\n  \"difficulty\": \"Medium\",\n  \"questionCount\": 5\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/interviews/generate",
+              "host": ["{{baseUrl}}"],
+              "path": ["interviews", "generate"]
+            }
+          }
+        },
+        {
+          "name": "Evaluate Interview",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"topic\": \"React\",\n  \"difficulty\": \"Medium\",\n  \"durationSeconds\": 300,\n  \"questions\": [\n    {\n      \"question\": \"Explain React Hooks.\",\n      \"expectedConcepts\": [\"useState\", \"useEffect\", \"state management\"]\n    }\n  ],\n  \"answers\": [\n    {\n      \"questionIndex\": 0,\n      \"userAnswer\": \"Hooks allow functional components to have state using useState and handle side effects with useEffect without writing class components.\"\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/interviews/evaluate",
+              "host": ["{{baseUrl}}"],
+              "path": ["interviews", "evaluate"]
+            }
+          }
+        },
+        {
+          "name": "Get Interview History",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/interviews/history?page=1&limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["interviews", "history"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "10" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Analytics",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/interviews/analytics",
+              "host": ["{{baseUrl}}"],
+              "path": ["interviews", "analytics"]
+            }
+          }
+        },
+        {
+          "name": "Toggle Favorite Interview",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/interviews/:id/favorite",
+              "host": ["{{baseUrl}}"],
+              "path": ["interviews", ":id", "favorite"],
+              "variable": [
+                { "key": "id", "value": "INTERVIEW_ID" }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Resume",
+      "item": [
+        {
+          "name": "Upload Resume PDF",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "resume",
+                  "type": "file",
+                  "src": ""
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/resume/upload",
+              "host": ["{{baseUrl}}"],
+              "path": ["resume", "upload"]
+            }
+          }
+        },
+        {
+          "name": "Analyze Resume Text Directly",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"resumeText\": \"Full Stack Software Engineer with 2 years of experience building scalable SPAs with React, TypeScript, Node.js, Express, and MongoDB. Experience in deploying containerized microservices with Docker.\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/resume/analyze",
+              "host": ["{{baseUrl}}"],
+              "path": ["resume", "analyze"]
+            }
+          }
+        },
+        {
+          "name": "Get Latest Resume Analysis",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/resume/latest",
+              "host": ["{{baseUrl}}"],
+              "path": ["resume", "latest"]
+            }
+          }
+        },
+        {
+          "name": "Generate Tailored Interview from Resume",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"difficulty\": \"Medium\",\n  \"count\": 5\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/resume/generate-interview",
+              "host": ["{{baseUrl}}"],
+              "path": ["resume", "generate-interview"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
